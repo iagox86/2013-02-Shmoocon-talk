@@ -1,0 +1,74 @@
+1. Presenter(s) Name
+
+Ron Bowes
+
+2. Bio limited to 100 words for you OR your group (not 100 words per
+person) – this limit will be strictly enforced.
+
+Ron Bowes is a security consultant for Leviathan Security Group. His
+primary job is penetration testing, vulnerability assessments, reverse
+engineering, and teaching. In his free time, he runs a blog at
+skullsecurity.org, collects and studies leaked password lists, runs the
+local Winnipeg hackerspace, designs and competes in capture-the-flag
+challenges, and trolls n00bs on Reddit.
+
+3. Abstract of your presentation limited to 200 words or less.
+
+As a group. the security industry has solved a lot of difficult
+problems.  Firewalls do a great job blocking traffic, overflow
+vulnerabilities are getting hard and harder to exploit on modern
+systems, and spam filters/captchas are nearly perfect. But there's one
+place where we have dropped the ball: cryptography. Why is cryptography
+so hard to get right? As a developer, you have to understand random
+numbers, key generation, padding, block chaining, initialization
+vectors, proper signature generation, and more, just to be somewhat
+safe. Even security professionals manage to screw it up, so how do we
+expect an average developer to get it right?
+
+For this talk, we'll be getting into deep detail on a bunch of well
+known attacks against crypto - including padding oracles (the Vaudenay
+attack), hash length extension, BEAST, CRIME, poorly generated random
+numbers, WEP, and more - to help demonstrate the problem, and begin to
+look at how we might be able to fix it. 
+
+4. Detailed outline/description of your topic.
+
+This talk will be fairly straight forward:
+
+- Some fundamentals about crypto/hashing (being that this is shmoocon,
+  and people are expected to have a good grounding in security, this
+  will be brief
+- Look, in good detail, at some of the more interesting crypto attacks
+  in good depth (how they work, how they're exploited, how they're
+  fixed):
+  - Padding oracles (Vaudenay attack)
+  - Hash length extension
+  - BEAST (chosen plaintext attack against CBC)
+  - CRIME (compression vulnerabilities)
+  - Poorly generated random numbers (my favourite example is shuffling a
+    deck of cards using a 32-bit seed)
+  - WEP (abusing initialization vectors)
+  - Bit-flipping attacks against RC4 and other stream ciphers
+- Look at some of the solutions
+  - Authenticated hashes - so important!
+    - EAX-mode for ciphers
+  - Encrypted data should not be put into the users' hands
+  - Random numbers with real entropy
+- How can we make this idiot proof?
+  - Invent an easy way for developers to generate and manage keys,
+    encrypt data, and sign the encrypted data, all in a safe way
+
+5. List of other conferences at which submission has been presented or submitted
+
+This is a brand new talk, hasn't been submitted anywhere yet.
+
+6. List of facilities requested beyond what is already provided (power,
+projector with VGA input, sound projection, and internet connectivity).
+
+n/a
+
+7. Let us know if you are a first time presenter.
+
+First time Shmoocon, but have presented at a few non-Shmoocon
+conferences
+
