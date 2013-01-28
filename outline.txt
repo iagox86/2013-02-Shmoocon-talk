@@ -1,0 +1,52 @@
+- The Mostly Real History of Crypto Attacks
+  - Old ciphers that were broken by analysis
+    - Caesar was easy
+    - Enigma is a cool example
+    - Cryptoquotes from the newspaper
+  - Symmetric encryption
+    - Had to share a unique key with everybody
+  - Public key encryption was invented
+    - Now Alice and Bob both send their key to Eve
+  - CAs were invented
+    - Some sort of tasteful goatse reference
+  - Mention a couple other broken cryptosystems
+    - While we're on the topic of goatse, WEP
+  - Talk about stealing cryptokeys with git	
+  - Usually implementations are broken, not the crypto itself
+    - Not always true....
+    - RC4
+    - MD5
+    - Etc.
+
+- An introduction to some crypto concepts
+  - Hashing
+  - Encryption
+    - Stream cipher
+    - Block cipher
+      - Modes of operation
+
+- Look, in good detail, at some of the more interesting crypto attacks
+  in good depth (how they work, how they're exploited, how they're
+  fixed):
+  - Bit-flipping attacks against RC4 and other stream ciphers
+  - Key re-use in stream ciphers
+  - Key re-use in block ciphers
+  - Compression attack
+  - Padding oracle attacks
+  - Hash length extension
+  - Poorly generated random numbers (my favourite example is shuffling a deck of cards using a 32-bit seed)
+    - Texas hold'em RNG fail
+
+- Look at some of the solutions
+  - Authenticated hashes - so important!
+    - HMAC
+    - EAX-mode for ciphers
+    - Caesar challenge
+  - When possible, encrypted data should not be put into the users' hands
+  - Random numbers with real entropy
+  - Eliminate passwords
+    - Google's "war on passwords"
+
+- How can we make this idiot proof?
+  - Invent an easy way for developers to generate and manage keys,
+    encrypt data, and sign the encrypted data, all in a safe way
