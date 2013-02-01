@@ -31,7 +31,7 @@
   - Bit-flipping attacks against RC4 and other stream ciphers
   - Key re-use in stream ciphers
   - Key re-use in block ciphers
-  - Compression attack
+	  - Compression attack
   - Padding oracle attacks
   - Hash length extension
   - Poorly generated random numbers (my favourite example is shuffling a deck of cards using a 32-bit seed)
