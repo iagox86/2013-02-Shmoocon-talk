@@ -91,31 +91,34 @@ def encrypt(text, mode, split_blocks)
 #  c.iv  = @@iv
   encrypted = (c.update(text) + c.final)
 
+  result = "<!-- Make the encrypted data easy for the demo -->\n\n"
+  result = "<!-- [[[#{encrypted.unpack("H*").first}]]] -->\n\n"
+
   if(split_blocks)
-    result = "<table border='1'>"
-    result += "<tr>"
-    result += "<td>Block</td>"
-    result += "<td>Encrypted</td>"
-    result += "<td>Plaintext</td>"
-    result += "</tr>"
+    result += "<table border='1'>\n"
+    result += "  <tr>\n"
+    result += "    <td>Block</td>\n"
+    result += "    <td>Encrypted</td>\n"
+    result += "    <td>Plaintext</td>\n"
+    result += "  </tr>\n"
     1.upto(encrypted.length / c.block_size) do |i|
       block = encrypted[(i - 1) * c.block_size, c.block_size]
       plain = text[(i - 1) * c.block_size, c.block_size]
-      result += "<tr>"
-      result += "<td>Block #{i}: </td>"
-      result += "<td><tt>#{block.unpack("H*")}</tt></td>"
-      #result += "<td><tt>#{sanitize(block)}</tt></td>"
-      result += "<td><tt>#{sanitize(plain)}</tt></td>"
-      result += "</tr>"
+      result += "  <tr>\n"
+      result += "    <td>Block #{i}: </td>\n"
+      result += "    <td><tt>#{block.unpack("H*")}</tt></td>\n"
+      #result += "    <td><tt>#{sanitize(block)}</tt></td>\n"
+      result += "    <td><tt>#{sanitize(plain)}</tt></td>\n"
+      result += "  </tr>\n"
     end
-    result += "</table>"
+    result += "</table>\n"
   else
-    result = "<table border='1'>"
-    result += "<tr>"
-    result += "<td><tt>#{encrypted.unpack("H*")}</tt></td>"
-    result += "<td><tt>#{sanitize(encrypted)}</tt></td>"
-    result += "</tr>"
-    result += "</table>"
+    result += "<table border='1'>\n"
+    result += "  <tr>\n"
+    result += "    <td><tt>#{encrypted.unpack("H*")}</tt></td>\n"
+    result += "    <td><tt>#{sanitize(encrypted)}</tt></td>\n"
+    result += "  </tr>\n"
+    result += "</table>\n"
   end
 
   return result
@@ -165,6 +168,7 @@ get("/keyreuse") do
   result += <<EOF
     <form method='get'>
       Please specify a prefix: <input type='text' name='data' value='#{params['data'].nil? ? '' : params['data']}' size=100><br>
+      Note: Must be in hex (eg, '41414141...')<br>
       (Some 'secret' text will be appended before encryption!)<p>
       Please choose an encryption mode, too:<br>
       <input type='radio' name='mode' value='des-ecb' #{params['mode'] == 'des-ecb' ? "checked" : ""}>des-ecb<br>
@@ -174,9 +178,10 @@ get("/keyreuse") do
     </form>
 EOF
   if(!params['data'].nil?)
+    data = [params['data']].pack('H*')
     result += <<EOF
       The result of encrypt("#{params['mode']}", "#{params['data']}" || TEXT1):
-      #{encrypt(params['data'] + TEXT1, params['mode'], true)}<p>
+      #{encrypt(data + TEXT1, params['mode'], true)}<p>
 EOF
   end
 
@@ -259,10 +264,8 @@ get("/paddingoracle") do
   end
 
   result += <<EOF
-    Attempt to secretly decrypt the following data:<br>
-    [[[#{encrypted.unpack("H*").first}]]]<p>
     <form method='get'>
-      Give it a try:
+      Attempt to secretly decrypt the following data:<br>
       <input type='text' name='data' size=100 value='#{params['data'].nil? ? encrypted.unpack("H*").pop : params['data']}'><br>
       <input type='submit' value='Submit'>
     </form>
