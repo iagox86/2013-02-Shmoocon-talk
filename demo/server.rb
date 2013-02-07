@@ -259,8 +259,10 @@ get("/paddingoracle") do
   end
 
   result += <<EOF
+    Attempt to secretly decrypt the following data:<br>
+    [[[#{encrypted.unpack("H*").first}]]]<p>
     <form method='get'>
-      Attempt to secretly decrypt the following data:<br>
+      Give it a try:
       <input type='text' name='data' size=100 value='#{params['data'].nil? ? encrypted.unpack("H*").pop : params['data']}'><br>
       <input type='submit' value='Submit'>
     </form>
