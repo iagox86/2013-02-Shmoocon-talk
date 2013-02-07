@@ -93,12 +93,19 @@ def encrypt(text, mode, split_blocks)
 
   if(split_blocks)
     result = "<table border='1'>"
+    result += "<tr>"
+    result += "<td>Block</td>"
+    result += "<td>Encrypted</td>"
+    result += "<td>Plaintext</td>"
+    result += "</tr>"
     1.upto(encrypted.length / c.block_size) do |i|
       block = encrypted[(i - 1) * c.block_size, c.block_size]
+      plain = text[(i - 1) * c.block_size, c.block_size]
       result += "<tr>"
       result += "<td>Block #{i}: </td>"
       result += "<td><tt>#{block.unpack("H*")}</tt></td>"
-      result += "<td><tt>#{sanitize(block)}</tt></td>"
+      #result += "<td><tt>#{sanitize(block)}</tt></td>"
+      result += "<td><tt>#{sanitize(plain)}</tt></td>"
       result += "</tr>"
     end
     result += "</table>"
@@ -121,7 +128,6 @@ get('/') do
     Welcome to Ron's Shmoocon Demo! Please select an option:
     <ul>
       <li><a href='/ecb'>ECB vs CBC encryption</li>
-      <li><a href='/bitflipping'>Bit-flipping</li>
       <li><a href='/keyreuse'>Key re-use</li>
       <li><a href='/lengthextension'>Hash length extension</li>
       <li><a href='/paddingoracle'>Padding oracle</li>
@@ -137,7 +143,7 @@ get("/ecb") do
   if(params['data'].nil?)
     result += <<EOF
       <form method='get'>
-        Encrypt the following text: <input type='text' name='data'><p>
+        Encrypt the following text: <input type='text' name='data' value='#{params['data'].nil? ? '' : params['data']}' size=100><br>
         <input type='submit' value='Submit'>
       </form>
 EOF
@@ -158,7 +164,7 @@ get("/keyreuse") do
 
   result += <<EOF
     <form method='get'>
-      Please specify a prefix: <input type='text' name='data' value='#{params['data'].nil? ? '' : params['data']}'><br>
+      Please specify a prefix: <input type='text' name='data' value='#{params['data'].nil? ? '' : params['data']}' size=100><br>
       (Some 'secret' text will be appended before encryption!)<p>
       Please choose an encryption mode, too:<br>
       <input type='radio' name='mode' value='des-ecb' #{params['mode'] == 'des-ecb' ? "checked" : ""}>des-ecb<br>
@@ -186,20 +192,20 @@ get("/lengthextension") do
   result += <<EOF
     You've captured a packet with the following data:<br>
     <ul>
-      <li>Hash = #{Digest::MD5.hexdigest(SECRET + DATA)}</li>
-      <li>Data = #{DATA}</li>
-      <li>Secret length = #{SECRET.length}</li>
+      <li>Hash = <tt>#{Digest::MD5.hexdigest(SECRET + DATA)}</tt></li>
+      <li>Data = <tt>#{DATA}</tt></li>
+      <li>Secret length = <tt>#{SECRET.length}</tt></li>
     </ul>
 
-    The Hash is calculated as, MD5(SECRET || "#{DATA}").<p>
+    The Hash is calculated as, <tt>MD5(SECRET || "#{DATA}")</tt>.<p>
 
     Your mission is to append a different filename, and also to determine a valid hash for that data.
 
     <form method='get'>
-      New hash: <input type='text' name='hash' value='#{params['hash'].nil? ? '' : params['hash']}'><br>
+      New hash: <input type='text' name='hash' size=50 value='#{params['hash'].nil? ? '' : params['hash']}'><br>
       (Note: Please provide the hash as a hex string (eg, 1a2b3c...)<p>
 
-      New data: <input type='text' name='data' value='#{params['data'].nil? ? '' : params['data']}'><br>
+      New data: <input type='text' name='data' value='#{params['data'].nil? ? '' : params['data']}' size=100><br>
       (Note: c-style hex escapes (eg, "\\x00") are accepted in the data)<p>
       <input type='submit' value='Submit'>
     </form>
@@ -215,8 +221,8 @@ EOF
     end
 
     result += <<EOF
-      MD5(SECRET || "#{sanitize(data)}") = <tt>#{goodhash}</tt><p>
-      You guessed: <tt>#{params['hash']}</tt>
+      <tt>MD5(SECRET || "#{sanitize(data)}") = <b>#{goodhash}</b></tt><p>
+      You guessed: <tt><b>#{params['hash']}</b></tt>
 EOF
   end
 
@@ -244,7 +250,7 @@ get("/paddingoracle") do
     rescue OpenSSL::Cipher::CipherError
       success = false
     end
-    result += "The result of decrypt(\"#{data.unpack("H*")}\"):<br>"
+    result += "The result of <tt>decrypt(\"#{data.unpack("H*")}\")</tt>:<br>"
     if(success)
       result += "THE RESULT OF YOUR ATTEMPT: <font color='green'>SUCCESS</font><p>"
     else
@@ -255,7 +261,7 @@ get("/paddingoracle") do
   result += <<EOF
     <form method='get'>
       Attempt to secretly decrypt the following data:<br>
-      <input type='text' name='data' value='#{params['data'].nil? ? encrypted.unpack("H*").pop : params['data']}'><br>
+      <input type='text' name='data' size=100 value='#{params['data'].nil? ? encrypted.unpack("H*").pop : params['data']}'><br>
       <input type='submit' value='Submit'>
     </form>
 
