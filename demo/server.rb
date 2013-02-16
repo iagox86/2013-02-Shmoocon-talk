@@ -13,12 +13,6 @@ require 'sinatra'
 
 set :port, 20222
 
-# TODO: ECB vs CBC
-# TODO: Key re-use
-# TODO: Bit-flipping
-# TODO: Hash length extension
-# TODO: Padding oracle example
-
 # Use the same key/iv for all attacks
 @@key = (1..32).map{rand(255).chr}.join
 #@@iv  = (1..32).map{rand(255).chr}.join
@@ -197,18 +191,18 @@ get("/lengthextension") do
   result += <<EOF
     You've captured a packet with the following data:<br>
     <ul>
-      <li>Hash = <tt>#{Digest::MD5.hexdigest(SECRET + DATA)}</tt></li>
+      <li>Signature = <tt>#{Digest::MD5.hexdigest(SECRET + DATA)}</tt></li>
       <li>Data = <tt>#{DATA}</tt></li>
       <li>Secret length = <tt>#{SECRET.length}</tt></li>
     </ul>
 
-    The Hash is calculated as, <tt>MD5(SECRET || "#{DATA}")</tt>.<p>
+    The Signature is calculated as, <tt>MD5(SECRET || "#{DATA}")</tt>.<p>
 
-    Your mission is to append a different filename, and also to determine a valid hash for that data.
+    Your mission is to append a different filename, and also to determine a valid signature for that data.
 
     <form method='get'>
-      New hash: <input type='text' name='hash' size=50 value='#{params['hash'].nil? ? '' : params['hash']}'><br>
-      (Note: Please provide the hash as a hex string (eg, 1a2b3c...)<p>
+      New signature: <input type='text' name='signature' size=50 value='#{params['signature'].nil? ? '' : params['signature']}'><br>
+      (Note: Please provide the signature as a hex string (eg, 1a2b3c...)<p>
 
       New data: <input type='text' name='data' value='#{params['data'].nil? ? '' : params['data']}' size=100><br>
       (Note: c-style hex escapes (eg, "\\x00") are accepted in the data)<p>
@@ -218,16 +212,16 @@ EOF
   if(!params['data'].nil?)
     data = unsanitize(params['data'])
 
-    goodhash = Digest::MD5.hexdigest(SECRET + data)
-    if(goodhash == params['hash'])
+    goodsignature = Digest::MD5.hexdigest(SECRET + data)
+    if(goodsignature == params['signature'])
       result += "THE RESULT OF YOUR ATTEMPT: <font color='green'>SUCCESS</font><p>"
     else
       result += "THE RESULT OF YOUR ATTEMPT: <font color='red'>FAILURE</font><p>"
     end
 
     result += <<EOF
-      <tt>MD5(SECRET || "#{sanitize(data)}") = <b>#{goodhash}</b></tt><p>
-      You guessed: <tt><b>#{params['hash']}</b></tt>
+      <tt>MD5(SECRET || "#{sanitize(data)}") = <b>#{goodsignature}</b></tt><p>
+      You guessed: <tt><b>#{params['signature']}</b></tt>
 EOF
   end
 
